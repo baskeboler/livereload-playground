@@ -1,12 +1,12 @@
 # livereload-playground
 
-Very basic local livereload server for html/js/css sketches
+Very basic local livereload server for html/js/scss sketches
 
 ## Default settings
 
 By default you get an empty index.html that includes:
 * Bootstrap cdn css
-* our own css/style.css
+* our own scss/style.css
 * an empty script.js inside js/ directory
 
 I have included a .bowerrc file in the project that sets the bower components directory to js/bower_components, so if you add a dependency with bower livereload will trigger a reload.
