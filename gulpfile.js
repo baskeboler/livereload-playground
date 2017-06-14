@@ -1,32 +1,48 @@
 var gulp = require('gulp');
 var livereload = require('gulp-livereload');
+var sass = require('gulp-sass');
+var cleanCSS = require('gulp-clean-css');
+var pump = require('pump');
 
-function dest(){
-    return gulp.dest('build');
+
+var BUILD_DIR = 'build';
+var HTML = ['index.html', 'pages/**/*.(html|htm)'];
+var JS = 'js/**/*.js';
+var STYLES = 'scss/style.scss';
+
+function dest() {
+    return gulp.dest(BUILD_DIR);
 }
 
-gulp.task('html', function(){
-    return gulp.src('index.html')
+gulp.task('html', function () {
+    return gulp.src(HTML)
         .pipe(dest())
         .pipe(livereload());
 });
 
-gulp.task('js', function() {
-    gulp.src('js/**/*.js', {base: '.'})
+gulp.task('js', function () {
+    gulp.src(JS, {
+            base: '.'
+        })
         .pipe(dest())
         .pipe(livereload())
 });
-gulp.task('css', function(){
-    return gulp.src('css/**/*.css', {base: '.'})
-        .pipe(dest())
-        .pipe(livereload());
-})
-gulp.task('default', ['html', 'js', 'css']);
+gulp.task('styles', function (cb) {
+    pump([
+        gulp.src(STYLES),
+        sass({}),
+        cleanCSS(),
+        gulp.dest(BUILD_DIR + '/css'), 
+        livereload()
+    ], cb);
+});
 
-gulp.task('watch', function(){
+gulp.task('default', ['html', 'js', 'styles']);
+
+gulp.task('watch', function () {
     livereload.listen();
 
-    gulp.watch('index.html', ['html']);
-    gulp.watch('js/**/*.js', ['js']);
-    gulp.watch('css/**/*.css', ['css']);
+    gulp.watch(HTML, ['html']);
+    gulp.watch(JS, ['js']);
+    gulp.watch(STYLES, ['styles']);
 })
